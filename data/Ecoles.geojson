@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "Ecoles",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "osm_id": "10881712002", "code": 2082, "fclass": "school", "name": "Lycée", "Adresse": "Fass Kouthia" }, "geometry": { "type": "Point", "coordinates": [ -13.1357395, 14.0694969 ] } },
+{ "type": "Feature", "properties": { "osm_id": "12437182888", "code": 2082, "fclass": "school", "name": "École primaire Bala Est", "Adresse": "Bala" }, "geometry": { "type": "Point", "coordinates": [ -13.1561195, 14.0233387 ] } },
+{ "type": "Feature", "properties": { "osm_id": null, "code": null, "fclass": null, "name": "College", "Adresse": "Sinthiou Bocar Samba" }, "geometry": { "type": "Point", "coordinates": [ -12.905122244873141, 14.016328244258519 ] } }
+]
+}

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Final - Gestion des Équipements scolaires</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.css">
+    <script src="https://unpkg.com/leaflet-measure@3.1.0/dist/leaflet-measure.js"></script>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-minimap/3.6.1/Control.MiniMap.min.js"></script>
+
+    <script src="js/leaflet.browser.print.min.js"></script>
+
+    <style>
+        /* ========================================
+           STYLES GÉNÉRAUX & COULEURS (Améliorés)
+           ======================================== */
+        :root {
+            /* Palette de Couleurs Professionnelle */
+            --color-primary: #1e40af; /* Bleu nuit pour l'entête et accents */
+            --color-secondary: #4b5563; /* Gris foncé */
+            --color-background-soft: #f9fafb; /* Arrière-plan de la sidebar */
+            --color-background-map: #ffffff; /* Fond de la carte et du corps */
+
+            /* Couleurs des couches */
+            --color-arrondissement: #2563eb; /* Bleu vif pour les limites */
+            --color-departement: #dc2626; /* Rouge */
+            --color-ecole: #10b981; /* Vert émeraude pour les écoles */
+            --color-localite: #f59e0b; /* Jaune/Orange pour les localités */
+            --color-route: #f97316; /* Orange pour les routes */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--color-secondary);
+            background: var(--color-background-map);
+        }
+
+        .main-container {
+            display: flex;
+            height: calc(100vh - 86px); /* Ajusté pour une navbar plus haute */
+        }
+
+        /* ========================================
+           NAVBAR (Améliorée)
+           ======================================== */
+        .navbar {
+            padding-top: 0.8rem;
+            padding-bottom: 0.8rem;
+            background-color: var(--color-primary) !important; /* Force le bleu nuit */
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            transition: all 0.2s;
+            border-radius: 5px;
+            padding: 8px 12px;
+        }
+
+        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* ========================================
+           SIDEBAR (Améliorée)
+           ======================================== */
+        .sidebar {
+            width: 320px;
+            min-width: 320px;
+            background: var(--color-background-soft);
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            border-right: 1px solid #e5e7eb;
+        }
+
+        .sidebar-content {
+            padding: 25px 20px;
+        }
+
+        .panel-section {
+            background: var(--color-background-map);
+            border-left: 5px solid var(--color-primary); /* Bordure plus épaisse */
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* Ombre portée douce */
+        }
+
+        .panel-section h3 {
+            color: var(--color-primary);
+            font-size: 1.25em;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .panel-section h3 i {
+            margin-right: 12px;
+            font-size: 1.4rem;
+        }
+
+        /* Style de la recherche */
+        #searchInput {
+            border-radius: 0.375rem 0 0 0.375rem;
+            border-color: #d1d5db;
+        }
+        .input-group .btn-outline-primary {
+            background-color: var(--color-primary);
+            color: #fff;
+            border-color: var(--color-primary);
+            transition: background-color 0.2s;
+        }
+        .input-group .btn-outline-primary:hover {
+            background-color: #1e3a8a; /* Lighter shade on hover */
+        }
+
+        /* Items de Couche */
+        .layer-item {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            padding: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-radius: 4px;
+        }
+
+        .layer-item:hover {
+            background-color: #eff6ff; /* Très légère couleur au survol */
+        }
+
+        .layer-item input[type="checkbox"] {
+            margin-right: 12px;
+            min-width: 20px; /* Taille légèrement augmentée */
+            min-height: 20px;
+            border-color: var(--color-secondary);
+        }
+
+        .layer-count {
+            margin-left: auto;
+            background: var(--color-primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            min-width: 35px;
+            text-align: center;
+        }
+        
+        /* ========================================
+           SYMBOLES (Améliorés pour les points)
+           ======================================== */
+        .layer-symbol, .legend-symbol {
+            display: inline-block;
+            margin-right: 10px;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        /* Polymère pour Arrondissements */
+        .symbol-polygon-arrondissement {
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--color-arrondissement); 
+            background: rgba(37, 99, 235, 0.1); 
+        }
+
+        /* Polymère pour Département (limite) */
+        .symbol-polygon-departement {
+            width: 18px;
+            height: 18px;
+            border: 3px solid var(--color-departement); 
+            background: rgba(220, 38, 38, 0.05);
+            border-style: dotted; /* Changement de style de limite */
+        }
+
+        /* Ligne */
+        .symbol-line {
+            width: 20px;
+            height: 4px; /* Plus épais */
+            background: var(--color-route);
+            border-radius: 2px;
+            margin: 7px 0;
+        }
+        
+        /* POINTS (MODIFIÉ selon la demande) */
+        .symbol-point {
+            width: 12px; 
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            /* Rendu simple: juste la couleur de remplissage avec une bordure subtile */
+            border: 1px solid rgba(0,0,0,0.1); 
+        }
+
+        .symbol-ecole {
+            background: var(--color-ecole);
+        }
+
+        .symbol-localite {
+            background: var(--color-localite);
+        }
+
+        /* ========================================
+           LÉGENDE (Améliorée)
+           ======================================== */
+        .legend {
+            background: var(--color-background-map);
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Ombre plus visible */
+            border: 1px solid #e5e7eb;
+        }
+
+        .legend h4 {
+            margin: 0 0 12px 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            border-bottom: 2px solid #eef;
+            padding-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 1em;
+            color: #374151;
+        }
+        
+        /* ========================================
+           CARTE & OUTILS (Améliorés)
+           ======================================== */
+        #map {
+            flex: 1;
+            z-index: 0;
+        }
+
+        /* Personnalisation du conteneur des outils de navigation */
+        .leaflet-top.leaflet-right {
+            padding-top: 15px;
+            padding-right: 15px;
+        }
+
+        .nav-tools-container {
+            background: var(--color-background-map);
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Ombre douce */
+        }
+
+        .nav-tools-container button {
+            color: var(--color-primary); /* Couleur plus visible */
+            font-size: 1.6rem; /* Icônes plus grandes */
+            padding: 8px;
+        }
+
+        .nav-tools-container button:hover {
+            color: #fff;
+            background-color: var(--color-primary);
+            border-radius: 6px;
+        }
+
+        /* Modal Styles */
+        .modal-header {
+            background-color: var(--color-primary) !important;
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="img/MEN.jpeg" alt="Logo" style="height: 50px; margin-right: 10px; border-radius: 5px; background: white; padding: 2px;">
+                Equipements Scolaires - GOUDIRY
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="bi bi-house-door-fill"></i> Accueil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            <i class="bi bi-info-circle-fill"></i> À propos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#catalogueModal">
+                            <i class="bi bi-book-fill"></i> Catalogue
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal"
+                            data-bs-target="#graphiqueModal">
+                            <i class="bi bi-bar-chart-fill"></i> Statistiques
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="telechargerDonnees()">
+                            <i class="bi bi-download"></i> Téléchargement
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="sidebar-content">
+                
+                <div class="panel-section">
+                    <h3><i class="bi bi-search"></i> Recherche</h3> 
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Rechercher un lieu/équipement..."
+                               onkeyup="if(event.key === 'Enter') executeSearch();">
+                        <button class="btn btn-outline-primary" type="button" onclick="executeSearch()" title="Lancer la recherche">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="bi bi-layers-fill"></i> Gestion des couches</h3>
+
+                    <div class="layer-item" onclick="document.getElementById('layerLocalites').click()">
+                        <input class="form-check-input" type="checkbox" id="layerLocalites" checked
+                            onchange="toggleLayer('localites')">
+                        <span class="layer-symbol symbol-point symbol-localite"></span>
+                        <label for="layerLocalites">Localités</label>
+                        <span class="layer-count" id="countLocalites">0</span>
+                    </div>
+
+                    <div class="layer-item" onclick="document.getElementById('layerEcoles').click()">
+                        <input class="form-check-input" type="checkbox" id="layerEcoles" checked
+                            onchange="toggleLayer('ecoles')">
+                        <span class="layer-symbol symbol-point symbol-ecole"></span>
+                        <label for="layerEcoles">Écoles</label>
+                        <span class="layer-count" id="countEcoles">0</span>
+                    </div>
+
+                    <div class="layer-item" onclick="document.getElementById('layerRoutes').click()">
+                        <input class="form-check-input" type="checkbox" id="layerRoutes" checked
+                            onchange="toggleLayer('routes')">
+                        <span class="layer-symbol symbol-line"></span>
+                        <label for="layerRoutes">Routes</label>
+                        <span class="layer-count" id="countRoutes">0</span>
+                    </div>
+
+                    <div class="layer-item" onclick="document.getElementById('layerArrondissements').click()">
+                        <input class="form-check-input" type="checkbox" id="layerArrondissements" checked
+                            onchange="toggleLayer('arrondissements')">
+                        <span class="layer-symbol symbol-polygon-arrondissement"></span>
+                        <label for="layerArrondissements">Arrondissements</label>
+                        <span class="layer-count" id="countArrondissements">0</span>
+                    </div>
+
+                    <div class="layer-item" onclick="document.getElementById('layerDepartements').click()">
+                        <input class="form-check-input" type="checkbox" id="layerDepartements" checked
+                            onchange=" toggleLayer('departements')">
+                        <span class="layer-symbol symbol-polygon-departement"></span>
+                        <label for="layerDepartements">Département </label>
+                        <span class=" layer-count" id="countDepartements">0</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                   
+                </div>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <div id="navToolsControl" class="leaflet-control leaflet-bar nav-tools-container" style="display: none;">
+        </div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-info-circle"></i> À propos de l'application</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Projet Final - SIG Web</h6>
+                    <p><strong>Application :</strong> Gestion des Équipements Scolaires</p>
+                    <p><strong>Département :</strong> GOUDIRY</p>
+                    <p><strong>Auteur :</strong> MAME OUMY DIA</p>
+                    <p><strong>Promotion :</strong> Licence 2025</p>
+                    <hr>
+                    <h6>Technologies utilisées</h6>
+                    <ul>
+                        <li>Leaflet.js - Cartographie web</li>
+                        <li>Bootstrap 5 - Interface utilisateur</li>
+                        <li>Chart.js - Graphiques statistiques</li>
+                        <li>Leaflet Draw & Measure - Outils cartographiques</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="catalogueModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-book"></i> Catalogue des données</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Couche</th>
+                                <th>Type Géométrique</th>
+                                <th>Nombre d'entités</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Localités</td>
+                                <td>Point</td>
+                                <td><span id="catalogueLocalites">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>Écoles</td>
+                                <td>Point</td>
+                                <td><span id="catalogueEcoles">0</span></td>
+                            <tr>
+                                <td>Routes</td>
+                                <td>Ligne</td>
+                                <td><span id="catalogueRoutes">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>Arrondissements</td>
+                                <td>Polygone</td>
+                                <td><span id="catalogueArrondissements">0</span></td>
+                            </tr>
+                            <tr>
+                                <td>Département (Limite)</td>
+                                <td>Polygone</td>
+                                <td><span id="catalogueDepartements">0</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="graphiqueModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-bar-chart"></i> Graphiques statistiques</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Répartition des éléments (Toutes couches)</h6>
+                    <div class="chart-container">
+                        <canvas id="chartEquipements"></canvas>
+                    </div>
+
+                    <h6 class="mt-4">Distribution par Type (Barres)</h6>
+                    <div class="chart-container">
+                        <canvas id="chartDistribution"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================
+           CONFIGURATION INITIALE
+           ======================================== */
+
+        // TODO: Modifiez ces coordonnées pour centrer sur VOTRE DEPARTEMENT DE TRAVAIL
+        var centerLat = 14.045;  
+        var centerLon = -13.017; 
+        var initialZoom = 9;       
+
+
+        /* ========================================
+           INITIALISATION DE LA CARTE
+           ======================================== */
+
+        var map = L.map('map').setView([centerLat, centerLon], initialZoom);
+
+        // Fond de carte OpenStreetMap
+        var osm = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Fond de carte satellite
+        var satellite = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+            maxZoom: 20,
+            attribution: '© Google Satellite'
+        });
+
+        // Contrôle des fonds de carte
+        var baseMaps = {
+            "OpenStreetMap": osm,
+            "Satellite Google": satellite
+        };
+
+        // Variables pour les couches de données
+        var layerLocalites = L.layerGroup().addTo(map);
+        var layerEcoles = L.layerGroup().addTo(map);
+        var layerRoutes = L.layerGroup().addTo(map);
+        var layerArrondissements = L.layerGroup().addTo(map);
+        var layerDepartements = L.layerGroup().addTo(map); 
+
+        // Liste des équipements (pour navigation et recherche)
+        var equipementsList = [];
+        var currentIndex = 0;
+
+        // Compteurs pour les graphiques
+        var stats = {
+            localites: 0,
+            ecoles: 0,
+            routes: 0,
+            arrondissements: 0,
+            departements: 0 
+        };
+
+        /* ========================================
+           OUTILS DE NAVIGATION SUR LA CARTE
+           ======================================== */
+        
+        // Création d'un contrôle Leaflet pour placer les outils dans le coin supérieur droit
+        var NavToolsControl = L.Control.extend({
+            options: {
+                position: 'topright'
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'nav-tools-container');
+                container.innerHTML = `
+                    <button onclick="precedent()" title="Élément Précédent">
+                        <i class="bi bi-arrow-left-circle"></i>
+                    </button>
+                    <button onclick="suivant()" title="Élément Suivant">
+                        <i class="bi bi-arrow-right-circle"></i>
+                    </button>
+                    <button onclick="vueGlobale()" title="Vue Globale">
+                        <i class="bi bi-globe"></i>
+                    </button>
+                `;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
+            }
+        });
+
+        new NavToolsControl().addTo(map);
+
+        /* ========================================
+           FONCTION UTILITAIRE DE GESTION D'ERREUR
+           ======================================== */
+        function handleGeoJsonError(layerName, jqXHR, textStatus, errorThrown) {
+            console.error(`Erreur de chargement pour ${layerName}: ${textStatus}, ${errorThrown}`);
+            if (textStatus === "error" && errorThrown === "Not Found") {
+                console.warn(`[ATTENTION] Le fichier GeoJSON pour "${layerName}" est manquant (data/${layerName}.geojson). Veuillez le créer.`);
+            }
+        }
+
+
+        /* ========================================
+           CHARGEMENT DES DONNÉES GEOJSON
+           ======================================== */
+
+        // ÉTAPE 1: Chargez les LOCALITÉS (Points)
+        $.getJSON('data/localites.geojson', function (data) {
+            L.geoJSON(data, {
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: "var(--color-localite)", 
+                        color: "#fff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                },
+                onEachFeature: function (feature, layer) {
+                    var props = feature.properties;
+                    var name = props.NOM || props.nom || props.name || 'Localité inconnue'; // Détermination du nom
+                    
+                    // Ajout du nom pour la recherche
+                    equipementsList.push({
+                        type: 'Localité',
+                        layer: layer,
+                        latlng: layer.getLatLng(),
+                        name: name
+                    });
+
+                    // POPUP LOCALITÉS : Utilisation de props.NOM
+                    layer.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: var(--color-localite); margin-top: 0;"><i class="bi bi-house-fill"></i> ${name}</h5>
+                            <p><strong>Type :</strong> ${props.type || 'Village'}</p>
+                            <p><strong>Population :</strong> ${props.population || 'N/A'}</p>
+                        </div>
+                    `);
+                }
+            }).addTo(layerLocalites);
+
+            stats.localites = data.features.length;
+            document.getElementById('countLocalites').textContent = stats.localites;
+            document.getElementById('catalogueLocalites').textContent = stats.localites;
+            updateCharts();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            handleGeoJsonError('localites', jqXHR, textStatus, errorThrown);
+        });
+
+
+        // ÉTAPE 2: Chargez les ÉCOLES (Points)
+        $.getJSON('data/ecoles.geojson', function (data) {
+            L.geoJSON(data, {
+                pointToLayer: function (feature, latlng) {
+                    return L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: "var(--color-ecole)", 
+                        color: "#fff",
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                },
+                onEachFeature: function (feature, layer) {
+                    var props = feature.properties;
+                    var name = props.nom || props.name || 'École inconnue'; // Détermination du nom
+                    
+                    // Ajout du nom pour la recherche
+                    equipementsList.push({
+                        type: 'École',
+                        layer: layer,
+                        latlng: layer.getLatLng(),
+                        name: name
+                    });
+
+                    // POPUP ÉCOLES : Affichage du nom et de l'Adresse
+                    layer.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: var(--color-ecole); margin-top: 0;"><i class="bi bi-mortarboard-fill"></i> ${name}</h5>
+                            <p><strong>Adresse :</strong> ${props.Adresse || 'N/A'}</p>
+                        </div>
+                    `);
+                }
+            }).addTo(layerEcoles);
+
+            stats.ecoles = data.features.length;
+            document.getElementById('countEcoles').textContent = stats.ecoles;
+            document.getElementById('catalogueEcoles').textContent = stats.ecoles;
+            updateCharts();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            handleGeoJsonError('ecoles', jqXHR, textStatus, errorThrown);
+        });
+
+
+        // ÉTAPE 3: Chargez les ROUTES (Lignes)
+        $.getJSON('data/routes.geojson', function (data) {
+            L.geoJSON(data, {
+                style: {
+                    color: "var(--color-route)", 
+                    weight: 3,
+                    opacity: 0.8
+                },
+                onEachFeature: function (feature, layer) {
+                    var props = feature.properties;
+                    layer.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: var(--color-route); margin-top: 0;"><i class="bi bi-signpost-2-fill"></i> ${props.nom || props.name || 'Route inconnue'}</h5>
+                            <p><strong>Type :</strong> ${props.type || 'Route Nationale'}</p>
+                            <p><strong>Longueur :</strong> ${props.longueur || 'N/A'}</p>
+                        </div>
+                    `);
+                }
+            }).addTo(layerRoutes);
+
+            stats.routes = data.features.length;
+            document.getElementById('countRoutes').textContent = stats.routes;
+            document.getElementById('catalogueRoutes').textContent = stats.routes;
+            updateCharts();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            handleGeoJsonError('routes', jqXHR, textStatus, errorThrown);
+        });
+
+
+        // ÉTAPE 4: Chargez les ARRONDISSEMENTS (Polygones)
+        $.getJSON('data/arrondissements.geojson', function (data) {
+            L.geoJSON(data, {
+                style: {
+                    color: "var(--color-arrondissement)", 
+                    weight: 2,
+                    fillColor: "var(--color-arrondissement)",
+                    fillOpacity: 0.1 
+                },
+                onEachFeature: function (feature, layer) {
+                    var props = feature.properties;
+                    // POPUP ARRONDISSEMENTS : Utilisation de props.cav (comme convenu)
+                    layer.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: var(--color-arrondissement); margin-top: 0;"><i class="bi bi-polygon"></i> ${props.cav || 'Arrondissement inconnu'}</h5>
+                            <p><strong>Type :</strong> Arrondissement Administratif</p>
+                            <p><strong>Superficie :</strong> ${props.superficie || 'N/A'}</p>
+                        </div>
+                    `);
+                }
+            }).addTo(layerArrondissements);
+
+            stats.arrondissements = data.features.length;
+            document.getElementById('countArrondissements').textContent = stats.arrondissements;
+            document.getElementById('catalogueArrondissements').textContent = stats.arrondissements;
+            updateCharts();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            handleGeoJsonError('arrondissements', jqXHR, textStatus, errorThrown);
+        });
+
+
+        // ÉTAPE 5: Chargez le DEPARTEMENT DE VOTRE DE PROJET (Polygones)
+        $.getJSON('data/departements.geojson', function (data) {
+            L.geoJSON(data, {
+                style: {
+                    color: "var(--color-departement)", 
+                    weight: 4, 
+                    fillColor: "var(--color-departement)",
+                    fillOpacity: 0.03,
+                    dashArray: '5, 5' // Style plus marqué pour la limite de projet
+                },
+                onEachFeature: function (feature, layer) {
+                    var props = feature.properties;
+                    layer.bindPopup(`
+                        <div style="min-width: 200px;">
+                            <h5 style="color: var(--color-departement); margin-top: 0;"><i class="bi bi-bounding-box-circles"></i> ${props.nom || props.name || 'Goudiry'}</h5>
+                            <p><strong>Statut :</strong> Limite du Projet</p>
+                            <p><strong>Région :</strong> ${props.region || 'N/A'}</p>
+                        </div>
+                    `);
+                }
+            }).addTo(layerDepartements);
+
+            stats.departements = data.features.length;
+            document.getElementById('countDepartements').textContent = stats.departements;
+            document.getElementById('catalogueDepartements').textContent = stats.departements;
+            updateCharts();
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+            handleGeoJsonError('departements', jqXHR, textStatus, errorThrown);
+        });
+
+
+        /* ========================================
+           LOGIQUE DE RECHERCHE DIRECTE & GLOBALE
+           ======================================== */
+        
+        // Stocker le marqueur de recherche globale pour pouvoir le supprimer
+        var globalSearchMarker = null;
+
+        async function executeSearch() {
+            var query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) {
+                alert("Veuillez entrer un nom de lieu à rechercher.");
+                return;
+            }
+
+            var found = false;
+            var lowerCaseQuery = query.toLowerCase();
+
+            // 1. Suppression du marqueur de recherche globale précédent s'il existe
+            if (globalSearchMarker) {
+                map.removeLayer(globalSearchMarker);
+                globalSearchMarker = null;
+            }
+
+            // --- PARTIE 1: RECHERCHE LOCALE (Localités et Écoles) ---
+            for (var i = 0; i < equipementsList.length; i++) {
+                var item = equipementsList[i];
+                
+                // Recherche d'une correspondance partielle (includes)
+                if (item.name && item.name.toLowerCase().includes(lowerCaseQuery)) {
+                    map.setView(item.latlng, 15);
+                    
+                    if (map.hasLayer(item.layer)) {
+                         item.layer.openPopup();
+                    } else {
+                        map.openPopup(`Lieu local trouvé : ${item.name} (${item.type})`, item.latlng);
+                    }
+                    found = true;
+                    currentIndex = i; 
+                    break; // Arrêter après le premier résultat local trouvé
+                }
+            }
+            
+            // --- PARTIE 2: RECHERCHE GLOBALE (Nominatim/OpenStreetMap) ---
+            if (!found) {
+                console.log("Recherche locale infructueuse. Tentative de recherche globale...");
+
+                // Appel à l'API Nominatim
+                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+                
+                try {
+                    const response = await fetch(url);
+                    const results = await response.json();
+
+                    if (results.length > 0) {
+                        const result = results[0];
+                        const lat = parseFloat(result.lat);
+                        const lon = parseFloat(result.lon);
+                        const displayName = result.display_name;
+                        
+                        // Création d'un marqueur temporaire pour le résultat de la recherche globale
+                        globalSearchMarker = L.marker([lat, lon], {
+                            icon: L.icon({
+                                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                                iconSize: [25, 41],
+                                iconAnchor: [12, 41],
+                                popupAnchor: [1, -34],
+                                shadowSize: [41, 41]
+                            })
+                        }).addTo(map);
+
+                        globalSearchMarker.bindPopup(`
+                            <div style="min-width: 250px;">
+                                <h5 style="color: var(--color-primary); margin-top: 0;"><i class="bi bi-geo-alt-fill"></i> Résultat global trouvé</h5>
+                                <p><strong>Lieu :</strong> ${displayName}</p>
+                                <p style="font-size: 0.8em; color: #666;">Ce lieu provient de la base de données OpenStreetMap (Recherche mondiale).</p>
+                            </div>
+                        `).openPopup();
+                        
+                        // Détermine le zoom approprié (12 pour un lieu général, 15 pour une adresse)
+                        let zoomLevel = result.class === 'place' || result.class === 'boundary' ? 10 : 15;
+
+                        map.setView([lat, lon], zoomLevel);
+                        found = true;
+                        console.log("Lieu trouvé via Nominatim:", displayName);
+                    }
+                } catch (error) {
+                    console.error("Erreur lors de la recherche Nominatim:", error);
+                }
+            }
+
+            if (!found) {
+                alert("Aucun lieu trouvé (local ou mondial) correspondant à : " + query);
+            }
+        }
+
+
+        /* ========================================
+           CONTRÔLE DES FONDS DE CARTE
+           ======================================== */
+
+        // Contrôle des couches de données
+        var overlayMaps = {
+            "Localités": layerLocalites,
+            "Écoles": layerEcoles,
+            "Routes Principales": layerRoutes,
+            "Arrondissements": layerArrondissements,
+            "Limite Départementale": layerDepartements
+        };
+
+        // Contrôle principal pour changer le fond de carte et afficher/masquer les couches
+        L.control.layers(baseMaps, overlayMaps, { collapsed: true, position: 'topleft' }).addTo(map);
+
+
+        /* ========================================
+           OUTILS DE DESSIN
+           ======================================== */
+
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            position: 'topleft',
+            edit: {
+                featureGroup: drawnItems,
+                remove: true
+            },
+            draw: {
+                // ... configuration existante ...
+                polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    shapeOptions: {
+                        color: 'var(--color-secondary)' // Utilisation de la variable
+                    }
+                },
+                polyline: {
+                    shapeOptions: {
+                        color: 'var(--color-secondary)'
+                    }
+                },
+                rectangle: {
+                    shapeOptions: {
+                        color: 'var(--color-secondary)'
+                    }
+                },
+                circle: {
+                    shapeOptions: {
+                        color: 'var(--color-secondary)'
+                    }
+                },
+                marker: true,
+                circlemarker: false
+            }
+        });
+        map.addControl(drawControl);
+
+        map.on('draw:created', function (e) {
+            var layer = e.layer;
+            drawnItems.addLayer(layer);
+            layer.bindPopup("Élément dessiné. Vous pouvez le télécharger via l'option 'Téléchargement'.");
+        });
+
+
+        /* ========================================
+           OUTIL DE MESURE
+           ======================================== */
+
+        var measureControl = L.control.measure({
+            position: 'topleft',
+            primaryLengthUnit: 'kilometers',
+            secondaryLengthUnit: 'meters',
+            primaryAreaUnit: 'sqkilometers',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+
+
+        /* ========================================
+           MINIMAP
+           ======================================== */
+
+        var miniMapLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        });
+
+        var miniMap = new L.Control.MiniMap(miniMapLayer, {
+            toggleDisplay: true,
+            minimized: true, // Laisser la minimap minimisée par défaut pour la sophistication
+            position: 'bottomleft'
+        }).addTo(map);
+
+
+        /* ========================================
+           LÉGENDE DYNAMIQUE
+           ======================================== */
+
+        var legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = `
+                <h4><i class="bi bi-list-ul"></i> Légende </h4>
+                               
+                <div class="legend-item">
+                    <span class="legend-symbol symbol-point symbol-localite"></span>
+                    Localités
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol symbol-point symbol-ecole"></span>
+                    Écoles
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol symbol-line"></span>
+                    Routes
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol symbol-polygon-arrondissement"></span>
+                    Arrondissements
+                </div>
+                <div class="legend-item">
+                    <span class="legend-symbol symbol-polygon-departement"></span>
+                    Département
+                </div>
+            `;
+            return div;
+        };
+
+        legend.addTo(map);
+
+
+        /* ========================================
+           GRAPHIQUES CHART.JS (Logique inchangée)
+           ======================================== */
+
+        var chartEquipements = null;
+        var chartDistribution = null;
+
+        function initCharts() {
+            var labels = ['Localités', 'Écoles', 'Routes', 'Arrondissements', 'Département'];
+            var backgroundColors = [
+                'var(--color-localite)',
+                'var(--color-ecole)', 
+                'var(--color-route)',
+                'var(--color-arrondissement)', 
+                'var(--color-departement)' 
+            ];
+
+            var ctx1 = document.getElementById('chartEquipements');
+            if (ctx1) {
+                chartEquipements = new Chart(ctx1, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: [0, 0, 0, 0, 0], 
+                            backgroundColor: backgroundColors.map(c => c + 'E6'), 
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            var ctx2 = document.getElementById('chartDistribution');
+            if (ctx2) {
+                chartDistribution = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Nombre d\'éléments',
+                            data: [0, 0, 0, 0, 0], 
+                            backgroundColor: backgroundColors.map(c => c + 'CC') 
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateCharts() {
+            var data = [stats.localites, stats.ecoles, stats.routes, stats.arrondissements, stats.departements];
+
+            if (chartEquipements) {
+                chartEquipements.data.datasets[0].data = data;
+                chartEquipements.update();
+            }
+
+            if (chartDistribution) {
+                chartDistribution.data.datasets[0].data = data;
+                chartDistribution.update();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var graphiqueModal = document.getElementById('graphiqueModal');
+            if (graphiqueModal) {
+                graphiqueModal.addEventListener('shown.bs.modal', function () {
+                    if (!chartEquipements || !chartDistribution) {
+                        initCharts();
+                    }
+                    updateCharts();
+                });
+            } else {
+                 initCharts();
+            }
+        });
+
+
+        /* ========================================
+           FONCTIONS DE NAVIGATION (Logique inchangée)
+           ======================================== */
+
+        function toggleLayer(type) {
+            var layer;
+            var checkbox;
+
+            switch (type) {
+                case 'localites':
+                    layer = layerLocalites;
+                    checkbox = document.getElementById('layerLocalites');
+                    break;
+                case 'ecoles':
+                    layer = layerEcoles;
+                    checkbox = document.getElementById('layerEcoles');
+                    break;
+                case 'routes':
+                    layer = layerRoutes;
+                    checkbox = document.getElementById('layerRoutes');
+                    break;
+                case 'arrondissements':
+                    layer = layerArrondissements;
+                    checkbox = document.getElementById('layerArrondissements');
+                    break;
+                case 'departements':
+                    layer = layerDepartements;
+                    checkbox = document.getElementById('layerDepartements');
+                    break;
+            }
+
+            if (checkbox.checked) {
+                map.addLayer(layer);
+            } else {
+                map.removeLayer(layer);
+            }
+        }
+
+        function precedent() {
+            if (equipementsList.length === 0) {
+                alert("Aucun équipement de type Point (Localité/École) chargé pour la navigation.");
+                return;
+            }
+
+            currentIndex = (currentIndex - 1 + equipementsList.length) % equipementsList.length;
+            naviguerVers(currentIndex);
+        }
+
+        function suivant() {
+            if (equipementsList.length === 0) {
+                alert("Aucun équipement de type Point (Localité/École) chargé pour la navigation.");
+                return;
+            }
+
+            currentIndex = (currentIndex + 1) % equipementsList.length;
+            naviguerVers(currentIndex);
+        }
+
+        function naviguerVers(index) {
+            var item = equipementsList[index];
+            map.setView(item.latlng, 15); 
+            if (map.hasLayer(item.layer)) {
+                item.layer.openPopup();
+            } else {
+                map.openPopup(`Centré sur ${item.type} n°${index + 1}`, item.latlng);
+            }
+        }
+
+        function vueGlobale() {
+            var allLayers = L.featureGroup([layerLocalites, layerEcoles, layerRoutes, layerArrondissements, layerDepartements, drawnItems]);
+            if (allLayers.getLayers().length > 0) {
+                // Ajout d'une petite marge pour ne pas coller aux bords (pad(0.1))
+                map.fitBounds(allLayers.getBounds().pad(0.1)); 
+            } else {
+                map.setView([centerLat, centerLon], initialZoom);
+                alert("Aucune couche de données n'est chargée sur la carte.");
+            }
+        }
+
+        function telechargerDonnees() {
+            if (drawnItems.getLayers().length === 0) {
+                alert("Aucune donnée à télécharger. Dessinez d'abord sur la carte avec les outils de dessin.");
+                return;
+            }
+
+            var data = drawnItems.toGeoJSON();
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "donnees_dessinees_goudiry.geojson");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+
+            alert("✅ Fichier GeoJSON téléchargé !");
+        }
+
+
+        /* ========================================
+           OUTILS SUPPLÉMENTAIRES
+           ======================================== */
+
+        // Échelle
+        L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+
+        // Impression
+        if (L.control.browserPrint) {
+            L.control.browserPrint({ 
+                position: 'topleft', 
+                title: 'Imprimer la carte',
+                documentTitle: 'Carte des Équipements Scolaires - GOUDIRY'
+            }).addTo(map);
+        }
+
+        console.log("✅ Carte initialisée. L'application est prête.");
+    </script>
+</body>
+
+</html>
