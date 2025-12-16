@@ -36,17 +36,26 @@
            ======================================== */
         :root {
             /* Palette de Couleurs Professionnelle */
-            --color-primary: #1e40af; /* Bleu nuit pour l'entête et accents */
-            --color-secondary: #4b5563; /* Gris foncé */
-            --color-background-soft: #f9fafb; /* Arrière-plan de la sidebar */
-            --color-background-map: #ffffff; /* Fond de la carte et du corps */
+            --color-primary: #1e40af;
+            /* Bleu nuit pour l'entête et accents */
+            --color-secondary: #4b5563;
+            /* Gris foncé */
+            --color-background-soft: #f9fafb;
+            /* Arrière-plan de la sidebar */
+            --color-background-map: #ffffff;
+            /* Fond de la carte et du corps */
 
             /* Couleurs des couches */
-            --color-arrondissement: #2563eb; /* Bleu vif pour les limites */
-            --color-departement: #dc2626; /* Rouge */
-            --color-ecole: #10b981; /* Vert émeraude pour les écoles */
-            --color-localite: #f59e0b; /* Jaune/Orange pour les localités */
-            --color-route: #f97316; /* Orange pour les routes */
+            --color-arrondissement: #2563eb;
+            /* Bleu vif pour les limites */
+            --color-departement: #dc26cd;
+            /* Violet pour les limites */
+            --color-ecole: #10b981;
+            /* Vert émeraude pour les écoles */
+            --color-localite: #f59e0b;
+            /* Jaune/Orange pour les localités */
+            --color-route: #f92516;
+            /* Rouge pour les routes */
         }
 
         * {
@@ -62,8 +71,9 @@
         }
 
         .main-container {
+            /* Ajusté pour une navbar plus haute */
             display: flex;
-            height: calc(100vh - 86px); /* Ajusté pour une navbar plus haute */
+            height: calc(100vh - 86px);
         }
 
         /* ========================================
@@ -72,9 +82,10 @@
         .navbar {
             padding-top: 0.8rem;
             padding-bottom: 0.8rem;
-            background-color: var(--color-primary) !important; /* Force le bleu nuit */
+            background-color: var(--color-primary) !important;
+            /* Force le bleu nuit */
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             font-size: 1.5rem;
@@ -89,10 +100,11 @@
             padding: 8px 12px;
         }
 
-        .navbar-nav .nav-link:hover, .navbar-nav .nav-link.active {
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
+
         /* ========================================
            SIDEBAR (Améliorée)
            ======================================== */
@@ -112,11 +124,13 @@
 
         .panel-section {
             background: var(--color-background-map);
-            border-left: 5px solid var(--color-primary); /* Bordure plus épaisse */
+            border-left: 5px solid var(--color-primary);
+            /* Bordure plus épaisse */
             padding: 20px;
             margin-bottom: 25px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06); /* Ombre portée douce */
+            /* Ombre portée douce */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
         }
 
         .panel-section h3 {
@@ -138,14 +152,17 @@
             border-radius: 0.375rem 0 0 0.375rem;
             border-color: #d1d5db;
         }
+
         .input-group .btn-outline-primary {
             background-color: var(--color-primary);
             color: #fff;
             border-color: var(--color-primary);
             transition: background-color 0.2s;
         }
+
         .input-group .btn-outline-primary:hover {
-            background-color: #1e3a8a; /* Lighter shade on hover */
+            background-color: #1e3a8a;
+            /* Lighter shade on hover */
         }
 
         /* Items de Couche */
@@ -155,18 +172,31 @@
             margin: 12px 0;
             padding: 8px;
             font-weight: 500;
-            cursor: pointer;
+            /* CURSEUR PAR DÉFAUT: Clicable uniquement sur checkbox et label */
             transition: background-color 0.2s;
             border-radius: 4px;
         }
 
         .layer-item:hover {
-            background-color: #eff6ff; /* Très légère couleur au survol */
+            background-color: #eff6ff;
+            /* Très légère couleur au survol */
         }
+
+        /* Étendre la zone cliquable du label */
+        .layer-item label {
+            flex-grow: 1;
+            /* Prend l'espace restant pour être cliquable */
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            /* Indique que c'est cliquable */
+        }
+
 
         .layer-item input[type="checkbox"] {
             margin-right: 12px;
-            min-width: 20px; /* Taille légèrement augmentée */
+            min-width: 20px;
+            /* Taille légèrement augmentée */
             min-height: 20px;
             border-color: var(--color-secondary);
         }
@@ -182,11 +212,12 @@
             min-width: 35px;
             text-align: center;
         }
-        
+
         /* ========================================
            SYMBOLES (Améliorés pour les points)
            ======================================== */
-        .layer-symbol, .legend-symbol {
+        .layer-symbol,
+        .legend-symbol {
             display: inline-block;
             margin-right: 10px;
             min-width: 25px;
@@ -197,36 +228,37 @@
         .symbol-polygon-arrondissement {
             width: 18px;
             height: 18px;
-            border: 3px solid var(--color-arrondissement); 
-            background: rgba(37, 99, 235, 0.1); 
+            border: 3px solid var(--color-arrondissement);
+            background: rgba(37, 99, 235, 0.1);
         }
 
         /* Polymère pour Département (limite) */
         .symbol-polygon-departement {
             width: 18px;
             height: 18px;
-            border: 3px solid var(--color-departement); 
+            border: 3px solid var(--color-departement);
             background: rgba(220, 38, 38, 0.05);
-            border-style: dotted; /* Changement de style de limite */
+            border-style: dotted;
+            /* Changement de style de limite */
         }
 
         /* Ligne */
         .symbol-line {
             width: 20px;
-            height: 4px; /* Plus épais */
+            height: 4px;
+            /* Plus épais */
             background: var(--color-route);
             border-radius: 2px;
             margin: 7px 0;
         }
-        
-        /* POINTS (MODIFIÉ selon la demande) */
+
+        /* POINTS (Modifiés à la demande) */
         .symbol-point {
-            width: 12px; 
+            width: 12px;
             height: 12px;
             border-radius: 50%;
             display: inline-block;
-            /* Rendu simple: juste la couleur de remplissage avec une bordure subtile */
-            border: 1px solid rgba(0,0,0,0.1); 
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .symbol-ecole {
@@ -244,7 +276,8 @@
             background: var(--color-background-map);
             padding: 18px;
             border-radius: 10px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Ombre plus visible */
+            /* Ombre plus visible */
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             border: 1px solid #e5e7eb;
         }
 
@@ -264,7 +297,7 @@
             font-size: 1em;
             color: #374151;
         }
-        
+
         /* ========================================
            CARTE & OUTILS (Améliorés)
            ======================================== */
@@ -283,12 +316,15 @@
             background: var(--color-background-map);
             padding: 8px;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Ombre douce */
+            /* Ombre douce */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         .nav-tools-container button {
-            color: var(--color-primary); /* Couleur plus visible */
-            font-size: 1.6rem; /* Icônes plus grandes */
+            color: var(--color-primary);
+            /* Couleur plus visible */
+            font-size: 1.6rem;
+            /* Icônes plus grandes */
             padding: 8px;
         }
 
@@ -310,7 +346,8 @@
     <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <img src="img/MEN.jpeg" alt="Logo" style="height: 50px; margin-right: 10px; border-radius: 5px; background: white; padding: 2px;">
+                <img src="img/MEN.jpeg" alt="Logo"
+                    style="height: 50px; margin-right: 10px; border-radius: 5px; background: white; padding: 2px;">
                 Equipements Scolaires - GOUDIRY
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -329,14 +366,12 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal"
-                            data-bs-target="#catalogueModal">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#catalogueModal">
                             <i class="bi bi-book-fill"></i> Catalogue
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal"
-                            data-bs-target="#graphiqueModal">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#graphiqueModal">
                             <i class="bi bi-bar-chart-fill"></i> Statistiques
                         </a>
                     </li>
@@ -353,13 +388,15 @@
     <div class="main-container">
         <div class="sidebar">
             <div class="sidebar-content">
-                
+
                 <div class="panel-section">
-                    <h3><i class="bi bi-search"></i> Recherche</h3> 
+                    <h3><i class="bi bi-search"></i> Recherche</h3>
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" id="searchInput" placeholder="Rechercher un lieu/équipement..."
-                               onkeyup="if(event.key === 'Enter') executeSearch();">
-                        <button class="btn btn-outline-primary" type="button" onclick="executeSearch()" title="Lancer la recherche">
+                        <input type="text" class="form-control" id="searchInput"
+                            placeholder="Rechercher un lieu/équipement..."
+                            onkeyup="if(event.key === 'Enter') executeSearch();">
+                        <button class="btn btn-outline-primary" type="button" onclick="executeSearch()"
+                            title="Lancer la recherche">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
@@ -368,49 +405,59 @@
                 <div class="panel-section">
                     <h3><i class="bi bi-layers-fill"></i> Gestion des couches</h3>
 
-                    <div class="layer-item" onclick="document.getElementById('layerLocalites').click()">
+                    <div class="layer-item">
                         <input class="form-check-input" type="checkbox" id="layerLocalites" checked
                             onchange="toggleLayer('localites')">
-                        <span class="layer-symbol symbol-point symbol-localite"></span>
-                        <label for="layerLocalites">Localités</label>
-                        <span class="layer-count" id="countLocalites">0</span>
+                        <label for="layerLocalites">
+                            <span class="layer-symbol symbol-point symbol-localite"></span>
+                            Localités
+                            <span class="layer-count" id="countLocalites">0</span>
+                        </label>
                     </div>
 
-                    <div class="layer-item" onclick="document.getElementById('layerEcoles').click()">
+                    <div class="layer-item">
                         <input class="form-check-input" type="checkbox" id="layerEcoles" checked
                             onchange="toggleLayer('ecoles')">
-                        <span class="layer-symbol symbol-point symbol-ecole"></span>
-                        <label for="layerEcoles">Écoles</label>
-                        <span class="layer-count" id="countEcoles">0</span>
+                        <label for="layerEcoles">
+                            <span class="layer-symbol symbol-point symbol-ecole"></span>
+                            Écoles
+                            <span class="layer-count" id="countEcoles">0</span>
+                        </label>
                     </div>
 
-                    <div class="layer-item" onclick="document.getElementById('layerRoutes').click()">
+                    <div class="layer-item">
                         <input class="form-check-input" type="checkbox" id="layerRoutes" checked
                             onchange="toggleLayer('routes')">
-                        <span class="layer-symbol symbol-line"></span>
-                        <label for="layerRoutes">Routes</label>
-                        <span class="layer-count" id="countRoutes">0</span>
+                        <label for="layerRoutes">
+                            <span class="layer-symbol symbol-line"></span>
+                            Routes
+                            <span class="layer-count" id="countRoutes">0</span>
+                        </label>
                     </div>
 
-                    <div class="layer-item" onclick="document.getElementById('layerArrondissements').click()">
+                    <div class="layer-item">
                         <input class="form-check-input" type="checkbox" id="layerArrondissements" checked
                             onchange="toggleLayer('arrondissements')">
-                        <span class="layer-symbol symbol-polygon-arrondissement"></span>
-                        <label for="layerArrondissements">Arrondissements</label>
-                        <span class="layer-count" id="countArrondissements">0</span>
+                        <label for="layerArrondissements">
+                            <span class="layer-symbol symbol-polygon-arrondissement"></span>
+                            Arrondissements
+                            <span class="layer-count" id="countArrondissements">0</span>
+                        </label>
                     </div>
 
-                    <div class="layer-item" onclick="document.getElementById('layerDepartements').click()">
+                    <div class="layer-item">
                         <input class="form-check-input" type="checkbox" id="layerDepartements" checked
                             onchange=" toggleLayer('departements')">
-                        <span class="layer-symbol symbol-polygon-departement"></span>
-                        <label for="layerDepartements">Département </label>
-                        <span class=" layer-count" id="countDepartements">0</span>
+                        <label for="layerDepartements">
+                            <span class="layer-symbol symbol-polygon-departement"></span>
+                            Département
+                            <span class=" layer-count" id="countDepartements">0</span>
+                        </label>
                     </div>
                 </div>
 
                 <div class="info-box">
-                   
+
                 </div>
             </div>
         </div>
@@ -419,7 +466,7 @@
     </div>
 
     <div id="navToolsControl" class="leaflet-control leaflet-bar nav-tools-container" style="display: none;">
-        </div>
+    </div>
 
     <div class="modal fade" id="aboutModal" tabindex="-1">
         <div class="modal-dialog">
@@ -523,9 +570,9 @@
            ======================================== */
 
         // TODO: Modifiez ces coordonnées pour centrer sur VOTRE DEPARTEMENT DE TRAVAIL
-        var centerLat = 14.045;  
-        var centerLon = -13.017; 
-        var initialZoom = 9;       
+        var centerLat = 14.045;
+        var centerLon = -13.017;
+        var initialZoom = 9;
 
 
         /* ========================================
@@ -557,7 +604,7 @@
         var layerEcoles = L.layerGroup().addTo(map);
         var layerRoutes = L.layerGroup().addTo(map);
         var layerArrondissements = L.layerGroup().addTo(map);
-        var layerDepartements = L.layerGroup().addTo(map); 
+        var layerDepartements = L.layerGroup().addTo(map);
 
         // Liste des équipements (pour navigation et recherche)
         var equipementsList = [];
@@ -569,13 +616,13 @@
             ecoles: 0,
             routes: 0,
             arrondissements: 0,
-            departements: 0 
+            departements: 0
         };
 
         /* ========================================
            OUTILS DE NAVIGATION SUR LA CARTE
            ======================================== */
-        
+
         // Création d'un contrôle Leaflet pour placer les outils dans le coin supérieur droit
         var NavToolsControl = L.Control.extend({
             options: {
@@ -593,6 +640,9 @@
                     <button onclick="vueGlobale()" title="Vue Globale">
                         <i class="bi bi-globe"></i>
                     </button>
+                    <button onclick="reinitialiser()" title="Réinitialiser la carte et les dessins">
+                        <i class="bi bi-arrow-counterclockwise"></i> 
+                    </button>
                 `;
                 L.DomEvent.disableClickPropagation(container);
                 return container;
@@ -602,27 +652,44 @@
         new NavToolsControl().addTo(map);
 
         /* ========================================
-           FONCTION UTILITAIRE DE GESTION D'ERREUR
+           FONCTION UTILITAIRE DE CHARGEMENT SYNCHRONE LOCAL (Correction Edge/file:///)
            ======================================== */
-        function handleGeoJsonError(layerName, jqXHR, textStatus, errorThrown) {
-            console.error(`Erreur de chargement pour ${layerName}: ${textStatus}, ${errorThrown}`);
-            if (textStatus === "error" && errorThrown === "Not Found") {
-                console.warn(`[ATTENTION] Le fichier GeoJSON pour "${layerName}" est manquant (data/${layerName}.geojson). Veuillez le créer.`);
+        /**
+         * Tente de charger un fichier GeoJSON local de manière synchrone. 
+         * Nécessaire pour minimiser les problèmes de chargement local, mais REQUIERT un serveur HTTP.
+         */
+        function loadGeoJsonSync(file) {
+            var request = new XMLHttpRequest();
+            try {
+                // 'false' rend la requête synchrone
+                request.open('GET', file, false); 
+                request.send(null);
+
+                if (request.status === 200) {
+                    return JSON.parse(request.responseText);
+                } else {
+                    console.error(`Erreur HTTP (${request.status}) lors du chargement de ${file}.`);
+                }
+            } catch (e) {
+                // Cette erreur est celle que vous voyez : bloqué par CORS policy (Fichier non servi par HTTP)
+                console.error(`[BLOCAGE SÉCURITÉ] Échec du chargement synchrone pour ${file}. Cause probable: Fichier ouvert via 'file:///' au lieu de 'http://'. Voir console F12.`);
             }
+            return null; // Retourne null en cas d'échec
         }
 
 
         /* ========================================
-           CHARGEMENT DES DONNÉES GEOJSON
+           CHARGEMENT DES DONNÉES GEOJSON (Utilisation du chargement synchrone)
            ======================================== */
 
         // ÉTAPE 1: Chargez les LOCALITÉS (Points)
-        $.getJSON('data/localites.geojson', function (data) {
-            L.geoJSON(data, {
+        var localitesData = loadGeoJsonSync('data/localites.geojson');
+        if (localitesData) {
+            L.geoJSON(localitesData, {
                 pointToLayer: function (feature, latlng) {
                     return L.circleMarker(latlng, {
                         radius: 8,
-                        fillColor: "var(--color-localite)", 
+                        fillColor: "#f59e0b",
                         color: "#fff",
                         weight: 2,
                         opacity: 1,
@@ -631,9 +698,8 @@
                 },
                 onEachFeature: function (feature, layer) {
                     var props = feature.properties;
-                    var name = props.NOM || props.nom || props.name || 'Localité inconnue'; // Détermination du nom
-                    
-                    // Ajout du nom pour la recherche
+                    var name = props.NOM || props.nom || props.name || 'Localité inconnue';
+
                     equipementsList.push({
                         type: 'Localité',
                         layer: layer,
@@ -641,7 +707,6 @@
                         name: name
                     });
 
-                    // POPUP LOCALITÉS : Utilisation de props.NOM
                     layer.bindPopup(`
                         <div style="min-width: 200px;">
                             <h5 style="color: var(--color-localite); margin-top: 0;"><i class="bi bi-house-fill"></i> ${name}</h5>
@@ -652,22 +717,21 @@
                 }
             }).addTo(layerLocalites);
 
-            stats.localites = data.features.length;
+            stats.localites = localitesData.features.length;
             document.getElementById('countLocalites').textContent = stats.localites;
             document.getElementById('catalogueLocalites').textContent = stats.localites;
             updateCharts();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            handleGeoJsonError('localites', jqXHR, textStatus, errorThrown);
-        });
+        }
 
 
         // ÉTAPE 2: Chargez les ÉCOLES (Points)
-        $.getJSON('data/ecoles.geojson', function (data) {
-            L.geoJSON(data, {
+        var ecolesData = loadGeoJsonSync('data/ecoles.geojson');
+        if (ecolesData) {
+            L.geoJSON(ecolesData, {
                 pointToLayer: function (feature, latlng) {
                     return L.circleMarker(latlng, {
                         radius: 8,
-                        fillColor: "var(--color-ecole)", 
+                        fillColor: "#10b981",
                         color: "#fff",
                         weight: 2,
                         opacity: 1,
@@ -676,9 +740,8 @@
                 },
                 onEachFeature: function (feature, layer) {
                     var props = feature.properties;
-                    var name = props.nom || props.name || 'École inconnue'; // Détermination du nom
-                    
-                    // Ajout du nom pour la recherche
+                    var name = props.nom || props.name || 'École inconnue';
+
                     equipementsList.push({
                         type: 'École',
                         layer: layer,
@@ -686,7 +749,6 @@
                         name: name
                     });
 
-                    // POPUP ÉCOLES : Affichage du nom et de l'Adresse
                     layer.bindPopup(`
                         <div style="min-width: 200px;">
                             <h5 style="color: var(--color-ecole); margin-top: 0;"><i class="bi bi-mortarboard-fill"></i> ${name}</h5>
@@ -696,20 +758,19 @@
                 }
             }).addTo(layerEcoles);
 
-            stats.ecoles = data.features.length;
+            stats.ecoles = ecolesData.features.length;
             document.getElementById('countEcoles').textContent = stats.ecoles;
             document.getElementById('catalogueEcoles').textContent = stats.ecoles;
             updateCharts();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            handleGeoJsonError('ecoles', jqXHR, textStatus, errorThrown);
-        });
+        }
 
 
         // ÉTAPE 3: Chargez les ROUTES (Lignes)
-        $.getJSON('data/routes.geojson', function (data) {
-            L.geoJSON(data, {
+        var routesData = loadGeoJsonSync('data/routes.geojson');
+        if (routesData) {
+            L.geoJSON(routesData, {
                 style: {
-                    color: "var(--color-route)", 
+                    color: "#f92516", // Couleur en hex pour plus de robustesse
                     weight: 3,
                     opacity: 0.8
                 },
@@ -725,27 +786,25 @@
                 }
             }).addTo(layerRoutes);
 
-            stats.routes = data.features.length;
+            stats.routes = routesData.features.length;
             document.getElementById('countRoutes').textContent = stats.routes;
             document.getElementById('catalogueRoutes').textContent = stats.routes;
             updateCharts();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            handleGeoJsonError('routes', jqXHR, textStatus, errorThrown);
-        });
+        }
 
 
         // ÉTAPE 4: Chargez les ARRONDISSEMENTS (Polygones)
-        $.getJSON('data/arrondissements.geojson', function (data) {
-            L.geoJSON(data, {
+        var arrondissementsData = loadGeoJsonSync('data/arrondissements.geojson');
+        if (arrondissementsData) {
+            L.geoJSON(arrondissementsData, {
                 style: {
-                    color: "var(--color-arrondissement)", 
+                    color: "#2563eb",
                     weight: 2,
-                    fillColor: "var(--color-arrondissement)",
-                    fillOpacity: 0.1 
+                    fillColor: "#2563eb",
+                    fillOpacity: 0.1
                 },
                 onEachFeature: function (feature, layer) {
                     var props = feature.properties;
-                    // POPUP ARRONDISSEMENTS : Utilisation de props.cav (comme convenu)
                     layer.bindPopup(`
                         <div style="min-width: 200px;">
                             <h5 style="color: var(--color-arrondissement); margin-top: 0;"><i class="bi bi-polygon"></i> ${props.cav || 'Arrondissement inconnu'}</h5>
@@ -756,24 +815,23 @@
                 }
             }).addTo(layerArrondissements);
 
-            stats.arrondissements = data.features.length;
+            stats.arrondissements = arrondissementsData.features.length;
             document.getElementById('countArrondissements').textContent = stats.arrondissements;
             document.getElementById('catalogueArrondissements').textContent = stats.arrondissements;
             updateCharts();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            handleGeoJsonError('arrondissements', jqXHR, textStatus, errorThrown);
-        });
+        }
 
 
         // ÉTAPE 5: Chargez le DEPARTEMENT DE VOTRE DE PROJET (Polygones)
-        $.getJSON('data/departements.geojson', function (data) {
-            L.geoJSON(data, {
+        var departementsData = loadGeoJsonSync('data/departements.geojson');
+        if (departementsData) {
+            L.geoJSON(departementsData, {
                 style: {
-                    color: "var(--color-departement)", 
-                    weight: 4, 
-                    fillColor: "var(--color-departement)",
+                    color: "#dc26cd",
+                    weight: 4,
+                    fillColor: "#dc26cd",
                     fillOpacity: 0.03,
-                    dashArray: '5, 5' // Style plus marqué pour la limite de projet
+                    dashArray: '5, 5'
                 },
                 onEachFeature: function (feature, layer) {
                     var props = feature.properties;
@@ -787,25 +845,23 @@
                 }
             }).addTo(layerDepartements);
 
-            stats.departements = data.features.length;
+            stats.departements = departementsData.features.length;
             document.getElementById('countDepartements').textContent = stats.departements;
             document.getElementById('catalogueDepartements').textContent = stats.departements;
             updateCharts();
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            handleGeoJsonError('departements', jqXHR, textStatus, errorThrown);
-        });
+        }
 
 
         /* ========================================
            LOGIQUE DE RECHERCHE DIRECTE & GLOBALE
            ======================================== */
-        
+
         // Stocker le marqueur de recherche globale pour pouvoir le supprimer
         var globalSearchMarker = null;
 
         async function executeSearch() {
             var query = document.getElementById('searchInput').value.trim();
-            
+
             if (!query) {
                 alert("Veuillez entrer un nom de lieu à rechercher.");
                 return;
@@ -823,29 +879,29 @@
             // --- PARTIE 1: RECHERCHE LOCALE (Localités et Écoles) ---
             for (var i = 0; i < equipementsList.length; i++) {
                 var item = equipementsList[i];
-                
+
                 // Recherche d'une correspondance partielle (includes)
                 if (item.name && item.name.toLowerCase().includes(lowerCaseQuery)) {
                     map.setView(item.latlng, 15);
-                    
+
                     if (map.hasLayer(item.layer)) {
-                         item.layer.openPopup();
+                        item.layer.openPopup();
                     } else {
                         map.openPopup(`Lieu local trouvé : ${item.name} (${item.type})`, item.latlng);
                     }
                     found = true;
-                    currentIndex = i; 
+                    currentIndex = i;
                     break; // Arrêter après le premier résultat local trouvé
                 }
             }
-            
+
             // --- PARTIE 2: RECHERCHE GLOBALE (Nominatim/OpenStreetMap) ---
             if (!found) {
                 console.log("Recherche locale infructueuse. Tentative de recherche globale...");
 
                 // Appel à l'API Nominatim
                 const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
-                
+
                 try {
                     const response = await fetch(url);
                     const results = await response.json();
@@ -855,7 +911,7 @@
                         const lat = parseFloat(result.lat);
                         const lon = parseFloat(result.lon);
                         const displayName = result.display_name;
-                        
+
                         // Création d'un marqueur temporaire pour le résultat de la recherche globale
                         globalSearchMarker = L.marker([lat, lon], {
                             icon: L.icon({
@@ -875,7 +931,7 @@
                                 <p style="font-size: 0.8em; color: #666;">Ce lieu provient de la base de données OpenStreetMap (Recherche mondiale).</p>
                             </div>
                         `).openPopup();
-                        
+
                         // Détermine le zoom approprié (12 pour un lieu général, 15 pour une adresse)
                         let zoomLevel = result.class === 'place' || result.class === 'boundary' ? 10 : 15;
 
@@ -902,13 +958,16 @@
         var overlayMaps = {
             "Localités": layerLocalites,
             "Écoles": layerEcoles,
-            "Routes Principales": layerRoutes,
+            "Routes": layerRoutes,
             "Arrondissements": layerArrondissements,
             "Limite Départementale": layerDepartements
         };
 
         // Contrôle principal pour changer le fond de carte et afficher/masquer les couches
-        L.control.layers(baseMaps, overlayMaps, { collapsed: true, position: 'topleft' }).addTo(map);
+        L.control.layers(baseMaps, overlayMaps, {
+            collapsed: true,
+            position: 'topleft'
+        }).addTo(map);
 
 
         /* ========================================
@@ -925,12 +984,11 @@
                 remove: true
             },
             draw: {
-                // ... configuration existante ...
                 polygon: {
                     allowIntersection: false,
                     showArea: true,
                     shapeOptions: {
-                        color: 'var(--color-secondary)' // Utilisation de la variable
+                        color: 'var(--color-secondary)'
                     }
                 },
                 polyline: {
@@ -986,7 +1044,7 @@
 
         var miniMap = new L.Control.MiniMap(miniMapLayer, {
             toggleDisplay: true,
-            minimized: true, // Laisser la minimap minimisée par défaut pour la sophistication
+            minimized: true,
             position: 'bottomleft'
         }).addTo(map);
 
@@ -995,12 +1053,14 @@
            LÉGENDE DYNAMIQUE
            ======================================== */
 
-        var legend = L.control({ position: 'bottomright' });
+        var legend = L.control({
+            position: 'bottomright'
+        });
 
         legend.onAdd = function (map) {
             var div = L.DomUtil.create('div', 'legend');
             div.innerHTML = `
-                <h4><i class="bi bi-list-ul"></i> Légende </h4>
+                <h4><i class="bi bi-list-ul"></i> Légende</h4>
                                
                 <div class="legend-item">
                     <span class="legend-symbol symbol-point symbol-localite"></span>
@@ -1012,7 +1072,7 @@
                 </div>
                 <div class="legend-item">
                     <span class="legend-symbol symbol-line"></span>
-                    Routes
+                    Routes 
                 </div>
                 <div class="legend-item">
                     <span class="legend-symbol symbol-polygon-arrondissement"></span>
@@ -1040,10 +1100,10 @@
             var labels = ['Localités', 'Écoles', 'Routes', 'Arrondissements', 'Département'];
             var backgroundColors = [
                 'var(--color-localite)',
-                'var(--color-ecole)', 
+                'var(--color-ecole)',
                 'var(--color-route)',
-                'var(--color-arrondissement)', 
-                'var(--color-departement)' 
+                'var(--color-arrondissement)',
+                'var(--color-departement)'
             ];
 
             var ctx1 = document.getElementById('chartEquipements');
@@ -1053,8 +1113,8 @@
                     data: {
                         labels: labels,
                         datasets: [{
-                            data: [0, 0, 0, 0, 0], 
-                            backgroundColor: backgroundColors.map(c => c + 'E6'), 
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: backgroundColors.map(c => c + 'E6'),
                             borderColor: '#fff',
                             borderWidth: 2
                         }]
@@ -1079,8 +1139,8 @@
                         labels: labels,
                         datasets: [{
                             label: 'Nombre d\'éléments',
-                            data: [0, 0, 0, 0, 0], 
-                            backgroundColor: backgroundColors.map(c => c + 'CC') 
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: backgroundColors.map(c => c + 'CC')
                         }]
                     },
                     options: {
@@ -1123,16 +1183,21 @@
                     updateCharts();
                 });
             } else {
-                 initCharts();
+                initCharts();
             }
         });
 
 
         /* ========================================
-           FONCTIONS DE NAVIGATION (Logique inchangée)
+           FONCTIONS DE NAVIGATION & GESTION DES COUCHES
            ======================================== */
 
-        function toggleLayer(type) {
+        /**
+         * Affiche ou masque une couche de données.
+         * @param {string} type - Le nom de la couche ('localites', 'ecoles', etc.).
+         * @param {boolean|null} [forceState=null] - Force l'état (true pour afficher, false pour masquer). Si null, utilise l'état de la checkbox.
+         */
+        function toggleLayer(type, forceState = null) {
             var layer;
             var checkbox;
 
@@ -1157,12 +1222,22 @@
                     layer = layerDepartements;
                     checkbox = document.getElementById('layerDepartements');
                     break;
+                default:
+                    return;
             }
 
-            if (checkbox.checked) {
+            // Détermine l'état souhaité : forcé ou basé sur la checkbox
+            var newState = (forceState !== null) ? forceState : checkbox.checked;
+
+            if (newState) {
                 map.addLayer(layer);
             } else {
                 map.removeLayer(layer);
+            }
+
+            // Mettre à jour l'état visuel de la checkbox si l'état est forcé
+            if (forceState !== null) {
+                checkbox.checked = forceState;
             }
         }
 
@@ -1188,7 +1263,7 @@
 
         function naviguerVers(index) {
             var item = equipementsList[index];
-            map.setView(item.latlng, 15); 
+            map.setView(item.latlng, 15);
             if (map.hasLayer(item.layer)) {
                 item.layer.openPopup();
             } else {
@@ -1200,12 +1275,44 @@
             var allLayers = L.featureGroup([layerLocalites, layerEcoles, layerRoutes, layerArrondissements, layerDepartements, drawnItems]);
             if (allLayers.getLayers().length > 0) {
                 // Ajout d'une petite marge pour ne pas coller aux bords (pad(0.1))
-                map.fitBounds(allLayers.getBounds().pad(0.1)); 
+                map.fitBounds(allLayers.getBounds().pad(0.1));
             } else {
                 map.setView([centerLat, centerLon], initialZoom);
                 alert("Aucune couche de données n'est chargée sur la carte.");
             }
         }
+
+        /**
+         * Ramène la carte à son état initial, supprime les dessins et réactive les couches par défaut.
+         */
+        function reinitialiser() {
+            // 1. Recentrer et zoomer
+            map.setView([centerLat, centerLon], initialZoom);
+
+            // 2. Supprimer tous les éléments dessinés par l'utilisateur
+            if (drawnItems && drawnItems.getLayers().length > 0) {
+                drawnItems.clearLayers();
+            }
+
+            // 3. Réactiver toutes les couches de données et cocher les cases
+            toggleLayer('localites', true);
+            toggleLayer('ecoles', true);
+            toggleLayer('routes', true);
+            toggleLayer('arrondissements', true);
+            toggleLayer('departements', true);
+
+            // 4. Effacer la recherche
+            document.getElementById('searchInput').value = '';
+
+            // 5. Supprimer le marqueur de recherche globale s'il existe
+            if (globalSearchMarker) {
+                map.removeLayer(globalSearchMarker);
+                globalSearchMarker = null;
+            }
+
+            alert("✅ La carte a été réinitialisée à son état initial.");
+        }
+
 
         function telechargerDonnees() {
             if (drawnItems.getLayers().length === 0) {
@@ -1232,12 +1339,15 @@
            ======================================== */
 
         // Échelle
-        L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+        L.control.scale({
+            imperial: false,
+            position: 'bottomleft'
+        }).addTo(map);
 
         // Impression
         if (L.control.browserPrint) {
-            L.control.browserPrint({ 
-                position: 'topleft', 
+            L.control.browserPrint({
+                position: 'topleft',
                 title: 'Imprimer la carte',
                 documentTitle: 'Carte des Équipements Scolaires - GOUDIRY'
             }).addTo(map);
