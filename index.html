@@ -93,6 +93,13 @@
         .sidebar-content {
             padding: 25px 20px;
         }
+        
+        /* Ligne à ajouter absolument */
+.sidebar.collapsed { margin-left: -320px !important; }
+
+/* Pour que le bouton flèche bouge aussi vers le bord gauche */
+#sidebarToggle.collapsed-btn { left: 0 !important; }
+
 
         .panel-section {
             background: var(--color-background-map);
@@ -111,6 +118,16 @@
             display: flex;
             align-items: center;
         }
+        /* --- Styles pour le bouton de réduction --- */
+        .sidebar { transition: margin-left 0.3s ease; }
+        .sidebar.collapsed { margin-left: -320px !important; }
+        #sidebarToggle {
+            position: absolute; left: 320px; top: 50%; transform: translateY(-50%);
+            z-index: 1100; background: #1e40af; color: white; border: none;
+            border-radius: 0 5px 5px 0; padding: 15px 8px; cursor: pointer;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2); transition: left 0.3s ease;
+        }
+        #sidebarToggle.collapsed-btn { left: 0 !important; }
 
         /* Items de Couche */
         .layer-item {
@@ -360,6 +377,9 @@
                 <div class="info-box">
 
                 </div>
+                <button id="sidebarToggle" onclick="toggleSidebar()" title="Réduire/Afficher">
+            <i id="toggleIcon" class="bi bi-chevron-left"></i>
+        </button>
             </div>
         </div>
 
@@ -1951,7 +1971,19 @@ var ecolesData = {
 
             alert("✅ Fichier GeoJSON téléchargé !");
         }
-
+function toggleSidebar() {
+            var sidebar = document.querySelector(".sidebar");
+            var toggleBtn = document.getElementById("sidebarToggle");
+            var icon = document.getElementById("toggleIcon");
+            sidebar.classList.toggle("collapsed");
+            toggleBtn.classList.toggle("collapsed-btn");
+            if (sidebar.classList.contains("collapsed")) {
+                icon.classList.replace("bi-chevron-left", "bi-chevron-right");
+            } else {
+                icon.classList.replace("bi-chevron-right", "bi-chevron-left");
+            }
+            setTimeout(function() { map.invalidateSize(); }, 300);
+        }
 
         // Échelle et Impression
         L.control.scale({
