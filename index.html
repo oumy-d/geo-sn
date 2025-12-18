@@ -1736,12 +1736,12 @@ var ecolesData = {
         function initCharts() {
             var labels = ['Localités', 'Écoles', 'Routes', 'Arrondissements', 'Département'];
             var backgroundColors = [
-                'var(--color-localite)',
-                'var(--color-ecole)',
-                'var(--color-route)',
-                'var(--color-arrondissement)',
-                'var(--color-departement)'
-            ];
+    '#f59e0b', // Orange pour Localités
+    '#10b981', // Vert pour Écoles
+    '#f92516', // Rouge pour Routes
+    '#2563eb', // Bleu pour Arrondissements
+    '#dc26cd'  // Rose pour Département
+];
 
             var ctx1 = document.getElementById('chartEquipements');
             if (ctx1) {
